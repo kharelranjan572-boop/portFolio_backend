@@ -15,18 +15,18 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://stridulous-uniformless-annemarie.ngrok-free.dev"
 ];
-// app.use(cors({
-//   origin: true,
-//   credentials: true
-// }));
 app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin) return cb(null, true);
-    if (allowedOrigins.includes(origin)) return cb(null, true);
-    return cb(new Error("Not allowed by CORS"));
-  },
-  credentials: true,
+  origin: true,
+  credentials: true
 }));
+// app.use(cors({
+//   origin: (origin, cb) => {
+//     if (!origin) return cb(null, true);
+//     if (allowedOrigins.includes(origin)) return cb(null, true);
+//     return cb(new Error("Not allowed by CORS"));
+//   },
+//   credentials: true,
+// }));
 
 app.use(express.urlencoded({
   extended: true,
