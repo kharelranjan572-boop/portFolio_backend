@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const tiktokController = require('../controller/tiktokController');
+const tiktok = require('../controller/tiktokController');
 
 // Step 1: Redirect to TikTok login
-router.get('/auth', tiktokController.getAuthURL);
+router.get("/auth", tiktok.getAuthURL);
+router.get("/callback", tiktok.exchangeToken);
 
-// Step 2: Callback to exchange code for access token
-router.get('/callback', tiktokController.exchangeToken);
-
-// Optional: fetch user info using access token
-router.get('/user-info/:token', tiktokController.getUserInfo);
-
+// router.get("/user", tiktok.requireAuth, tiktok.getUserInfo);
+router.get("/user",  tiktok.getUserInfo);
+// router.post("/videos", tiktok.requireAuth, tiktok.getTikTokContent);
+router.get("/videos",  tiktok.getTikTokContent);
+router.post("/refresh", tiktok.refreshTokenRoute);
 module.exports = router;

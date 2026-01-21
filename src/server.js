@@ -7,9 +7,18 @@ const UserRouter = require('./router/userRouter')
 const path = require('path');
 const app = express()
 const PORT = process.env.PORT || 5000;
+const session = require("express-session");
+
 app.use(express.json({ limit: '50mb' }));
 app.use(CookieParser());
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://stridulous-uniformless-annemarie.ngrok-free.dev"
+];
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 
 app.use(express.urlencoded({
   extended: true,
@@ -17,16 +26,34 @@ app.use(express.urlencoded({
 }));
 // Connect DB
 connectDB();
+app.set("trust proxy", 1);
+
+app.use(session({
+  name: "tiktok.sid",
+  secret: "secret",
+  resave: false,
+  saveUninitialized: false,
+  proxy:true,
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 15
+  }
+}));
+
 
 app.use('/', UserRouter)
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/facebook', require('./router/fbRouter'))
 app.use('/tiktok', require('./router/tiktokRouter'))
+app.use('/youtube', require('./router/ytRouter'))
 
-// console.log(process.env.PORT)
+console.log(process.env.PORT)
+
 // Start server
-// app.listen(PORT, () => {
-//   console.log(`Server running on http://localhost:${PORT}`);
-// });
-module.exports=app;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+// module.exports=app;
