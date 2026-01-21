@@ -15,9 +15,17 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://stridulous-uniformless-annemarie.ngrok-free.dev"
 ];
+// app.use(cors({
+//   origin: true,
+//   credentials: true
+// }));
 app.use(cors({
-  origin: true,
-  credentials: true
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
 }));
 
 app.use(express.urlencoded({
@@ -30,10 +38,10 @@ app.set("trust proxy", 1);
 
 app.use(session({
   name: "tiktok.sid",
-  secret: "secret",
+  secret: process.env.sessionSecret,
   resave: false,
   saveUninitialized: false,
-  proxy:true,
+  proxy: true,
   cookie: {
     httpOnly: true,
     secure: true,
@@ -54,6 +62,6 @@ console.log(process.env.PORT)
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  // console.log(`Server running on http://localhost:${PORT}`);
 });
 // module.exports=app;
